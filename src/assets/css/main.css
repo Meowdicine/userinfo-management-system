@@ -1,0 +1,83 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import 'ng_progress.css';
+
+/* fonts */
+@font-face {
+  font-family: 'Poppins';
+  src: local('Poppins'), url(./../fonts/Poppins-Regular.ttf) format('truetype');
+}
+
+#app {
+  font-family: 'Poppins';
+  font-size: 15px;
+}
+
+/* Buttons */
+.btn {
+  @apply px-4 py-2 capitalize;
+  transition: all 0.25s ease-in-out;
+}
+
+.btn-primary {
+  @apply bg-purple-600 text-white rounded;
+}
+
+.btn-primary:hover {
+  @apply bg-purple-700 text-white;
+}
+
+.btn-white {
+  @apply bg-white text-gray-800 rounded border;
+}
+
+.btn-white:hover {
+  @apply bg-gray-100;
+}
+
+.btn-danger {
+  @apply bg-red-600 text-white rounded border;
+}
+
+.btn-danger:hover {
+  @apply bg-red-700;
+}
+
+/* card table */
+.card {
+  @apply bg-white rounded shadow border-gray-200;
+}
+
+.card-table {
+  @apply bg-white rounded;
+}
+
+.card-table th:first-child,
+.card-table td:first-child {
+  @apply pl-6;
+}
+
+.card-table th:last-child,
+.card-table td:last-child {
+  line-height: inherit;
+  @apply pr-6;
+}
+
+.card-table th,
+.card-table td {
+  @apply p-5;
+  white-space: nowrap;
+}
+
+.card-table thead {
+  @apply border-gray-200 border-b text-left bg-white;
+}
+
+.card-table tr:not(:last-child) {
+  @apply border-b border-gray-200;
+}
+
+.card-table tbody tr:hover {
+  @apply bg-gray-100;
+}
