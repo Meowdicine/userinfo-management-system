@@ -1,4 +1,3 @@
-const {json} = require('body-parser')
 const {User} = require('../models')
 
 // Create and Save a new User
@@ -107,9 +106,6 @@ exports.findAll = (req, res) => {
   })
 }
 
-// Find a single User with an id
-exports.findOne = (req, res) => {}
-
 // Update a User by the id in the request
 exports.update = (req, res) => {
   const {id} = req.params
@@ -122,9 +118,9 @@ exports.update = (req, res) => {
   }
 
   User.findByIdAndUpdate(id, update, {
-    // new: true,
-    // runValidators: true,
-    // useFindAndModify: true
+    new: true,
+    runValidators: true,
+    useFindAndModify: true
   })
     .then(data => {
       if (!data) {

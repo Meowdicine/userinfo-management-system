@@ -1,4 +1,4 @@
-const {Provider, User} = require('../models')
+const {Provider} = require('../models')
 
 // Create and Save a new Provider
 exports.create = (req, res) => {
