@@ -184,8 +184,10 @@ export default {
           this.checkLastPage(this.pagination)
         })
         .finally(() => {
-          NProgress.done()
-          this.loader = false
+          setTimeout(() => {
+            NProgress.done()
+            this.loader = false
+          }, 1000)
         })
     },
 
@@ -256,15 +258,15 @@ export default {
     },
   },
 
-  created() {
-    this.getDataTable()
-  },
-
   mounted() {
+    this.getDataTable()
     this.Bus.$on('getDataTable', () => this.getDataTable())
   },
 
   watch: {
+    $route() {
+      this.getDataTable()
+    },
     search() {
       clearTimeout(this.searchTime)
       this.searchTime = setTimeout(() => {

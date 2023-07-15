@@ -4,7 +4,7 @@
     <nav class="pb-2 shadow bg-white">
       <div class="max-w-7xl mx-auto">
         <div class="md:max-w-max flex justify-center md:justify-start">
-          <router-link to="/home">
+          <router-link :to="`/users?page=1`">
             <span class="italic font-bold text-primary"><Logo /></span>
           </router-link>
         </div>
