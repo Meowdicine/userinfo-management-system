@@ -1,9 +1,13 @@
 <template>
   <div>
     <!-- Navbar -->
-    <nav class="flex flex-wrap p-4 shadow">
+    <nav class="pb-2 shadow bg-white">
       <div class="max-w-7xl mx-auto">
-        <router-link to="/home">Home</router-link>
+        <div class="md:max-w-max flex justify-center md:justify-start">
+          <router-link to="/home">
+            <span class="italic font-bold text-primary"><Logo /></span>
+          </router-link>
+        </div>
       </div>
     </nav>
 
@@ -21,19 +25,20 @@
 </template>
 
 <script>
-import Alert from "./components/Alert.vue";
+import Alert from './components/Alert.vue'
+import Logo from './components/Logo.vue'
 export default {
-  components: { Alert },
+  components: {Alert, Logo},
   data() {
     return {
       alert: {
         show: false,
       },
-    };
+    }
   },
 
   mounted() {
-    this.Bus.$on("alert", (res) => (this.alert = res));
+    this.Bus.$on('alert', res => (this.alert = res))
   },
-};
+}
 </script>

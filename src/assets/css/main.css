@@ -5,12 +5,17 @@
 
 /* fonts */
 @font-face {
-  font-family: 'Poppins';
-  src: local('Poppins'), url(./../fonts/Poppins-Regular.ttf) format('truetype');
+  font-family: SFProDisplay;
+  src: local('SFProDisplay'),
+    url('./../fonts/SFProDisplay-Regular.OTF') format('truetype');
+}
+
+body {
+  @apply bg-gray-100;
 }
 
 #app {
-  font-family: 'Poppins';
+  font-family: 'SFProDisplay';
   font-size: 15px;
 }
 

@@ -1,34 +1,29 @@
 <template>
   <div>
     <Loader v-if="loader" />
-    <div v-else>
-      <div class="md:flex-row md:justify-between flex flex-col-reverse">
-        <div class="md:w-1/3">
+    <div v-else class="flex flex-col space-y-4">
+      <div
+        class="items-center justify-between flex flex-col-reverse md:flex-row"
+      >
+        <div class="w-full md:w-1/3">
           <FormInput
             type="text"
-            class="mb-4"
             v-model="search"
             :iconText="'&#128270;'"
-            placeholder="search by user name"
+            placeholder="Search by user's name..."
           />
         </div>
-        <div>
+        <div class="mb-4 md:mb-0">
           <slot name="topButton" />
         </div>
       </div>
       <div id="dataTable">
-        <div class="w-full card">
-          <div class="overflow-x-auto border-b border-gray-200">
+        <div class="w-full card border-2">
+          <div class="overflow-x-auto border-b-2 border-gray-200">
             <table class="min-w-full card-table">
               <thead class="relative">
                 <tr
-                  class="
-                    leading-4
-                    capitalize
-                    tracking-wider
-                    text-base text-left
-                    border-b border-gray-200
-                  "
+                  class="leading-4 capitalize tracking-wider text-base text-left border-b-2 border-gray-200"
                 >
                   <slot name="tableHead">
                     <th
@@ -60,11 +55,7 @@
                 <tr
                   :key="index"
                   v-for="(item, index) in items"
-                  class="
-                    text-gray-900
-                    hover:bg-blue-600
-                    border-b border-gray-200
-                  "
+                  class="text-gray-900 hover:bg-blue-600 border-b-2 border-gray-200"
                 >
                   <slot name="tableRow" :item="item">
                     <td
@@ -126,12 +117,12 @@
 </template>
 
 <script>
-import NProgress from "nprogress";
-import Loader from "./Loader.vue";
-import FormInput from "./FormInput.vue";
+import NProgress from 'nprogress'
+import Loader from './Loader.vue'
+import FormInput from './FormInput.vue'
 
 export default {
-  components: { Loader, FormInput },
+  components: {Loader, FormInput},
   props: {
     url: String,
     headers: {
@@ -142,35 +133,35 @@ export default {
   data: () => ({
     items: [],
 
-    search: "",
+    search: '',
     sorting: {},
     searchTime: null,
 
-    message: "",
+    message: '',
     loader: true,
     currentPage: 1,
     show_footer: true,
-    pagination: { last_page: 1 },
+    pagination: {last_page: 1},
   }),
 
   methods: {
     // function to fetch table's Data
     getDataTable() {
-      NProgress.start();
-      this.message = "Loading...";
-      this.checkCurrentPage();
+      NProgress.start()
+      this.message = 'Loading...'
+      this.checkCurrentPage()
 
-      let query = {};
+      let query = {}
       if (this.search) {
-        query.name = this.search;
+        query.name = this.search
       } else {
-        delete query.name;
+        delete query.name
       }
 
       if (Object.keys(this.sorting).length) {
-        query.sorting = this.sorting;
+        query.sorting = this.sorting
       } else {
-        delete query.sorting;
+        delete query.sorting
       }
 
       this.fetch()
@@ -180,35 +171,35 @@ export default {
             page: this.currentPage,
           },
         })
-        .then(({ data }) => {
+        .then(({data}) => {
           if (data.data.length) {
-            this.items = data.data;
-            this.show_footer = true;
-            this.pagination = data.pagination;
+            this.items = data.data
+            this.show_footer = true
+            this.pagination = data.pagination
           } else {
-            this.items = [];
-            this.show_footer = false;
-            this.message = "no items to show";
+            this.items = []
+            this.show_footer = false
+            this.message = 'no items to show'
           }
-          this.checkLastPage(this.pagination);
+          this.checkLastPage(this.pagination)
         })
         .finally(() => {
-          NProgress.done();
-          this.loader = false;
-        });
+          NProgress.done()
+          this.loader = false
+        })
     },
 
     paginate(action) {
-      action === "next" ? this.currentPage++ : this.currentPage--;
-      this.$router.replace({ query: { page: this.currentPage } });
-      this.getDataTable();
+      action === 'next' ? this.currentPage++ : this.currentPage--
+      this.$router.replace({query: {page: this.currentPage}})
+      this.getDataTable()
     },
 
-    sort({ key }) {
+    sort({key}) {
       this.sorting.orderType =
-        this.sorting.orderType === "desc" ? "asc" : "desc";
-      this.sorting.orderBy = key;
-      this.getDataTable();
+        this.sorting.orderType === 'desc' ? 'asc' : 'desc'
+      this.sorting.orderBy = key
+      this.getDataTable()
     },
 
     checkCurrentPage() {
@@ -217,10 +208,10 @@ export default {
         !isNaN(this.$route.query.page) &&
         this.$route.query.page > 0
       ) {
-        this.currentPage = this.$route.query.page;
+        this.currentPage = this.$route.query.page
       } else {
-        this.currentPage = 1;
-        this.$router.push({ query: { page: this.currentPage } });
+        this.currentPage = 1
+        this.$router.push({query: {page: this.currentPage}})
       }
     },
 
@@ -230,58 +221,57 @@ export default {
         !isNaN(this.$route.query.page) &&
         this.$route.query.page > pagination.last_page
       ) {
-        this.$router.push({ name: "NotFound" });
+        this.$router.push({name: 'NotFound'})
       }
     },
 
     displayCellValue(item, header) {
-      let value = null;
+      let value = null
       if (header.formatter && header.formatter.constructor === Function) {
-        value = header.formatter(item);
+        value = header.formatter(item)
         if (value !== null) {
-          return !value.includes("null") ? value : "_";
+          return !value.includes('null') ? value : '_'
         }
       } else if (header.key) {
-        let keys = header.key.split(".");
-        let finalValue = item[keys.shift()];
+        let keys = header.key.split('.')
+        let finalValue = item[keys.shift()]
 
         if (finalValue && [Object, Array].includes(finalValue.constructor)) {
-          keys.forEach((key) => {
+          keys.forEach(key => {
             if (
               finalValue &&
               [Object, Array].includes(finalValue.constructor)
             ) {
-              finalValue = finalValue[key];
+              finalValue = finalValue[key]
             } else {
-              finalValue = null;
+              finalValue = null
             }
-          });
+          })
         }
 
-        value = finalValue;
+        value = finalValue
       }
 
-      return value || "_";
+      return value || '_'
     },
   },
 
   created() {
-    this.getDataTable();
+    this.getDataTable()
   },
 
   mounted() {
-    this.Bus.$on("getDataTable", () => this.getDataTable());
+    this.Bus.$on('getDataTable', () => this.getDataTable())
   },
 
   watch: {
     search() {
-      clearTimeout(this.searchTime);
+      clearTimeout(this.searchTime)
       this.searchTime = setTimeout(() => {
-        this.$route.query.page != 1 &&
-          this.$router.replace({ query: { page: 1 } });
-        this.getDataTable();
-      }, 1000);
+        this.$route.query.page != 1 && this.$router.replace({query: {page: 1}})
+        this.getDataTable()
+      }, 1000)
     },
   },
-};
+}
 </script>

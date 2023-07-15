@@ -6,7 +6,7 @@ const {url, mongoose} = require('./models')
 const app = express()
 
 var corsOptions = {
-  origin: 'http://localhost:8081'
+  origin: 'http://localhost:8081',
 }
 
 app.use(cors(corsOptions))
@@ -20,7 +20,7 @@ app.use(bodyParser.urlencoded({extended: true}))
 mongoose
   .connect(url, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
   })
   .then(() => {
     console.log('Connected to the database!')
