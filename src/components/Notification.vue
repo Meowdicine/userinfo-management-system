@@ -1,5 +1,6 @@
 <template>
   <div
+    v-if="isVisible"
     class="fixed bottom-0 left-4 mb-4 bg-green-100 border border-green-200 text-sm text-green-600 hover:text-green-800 rounded-md shadow-md"
     role="alert"
   >
