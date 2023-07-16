@@ -1,24 +1,18 @@
-module.exports = app => {
-  const {
-    create,
-    findAll,
-    update,
-    deleteUser
-  } = require('../controllers/user.js')
+import express from 'express'
+import {create, findAll, update, deleteUser} from '../controllers/user.js'
 
-  var router = require('express').Router()
+const router = express.Router()
 
-  // Create a new User
-  router.post('/', create)
+// Create a new User
+router.post('/', create)
 
-  // Retrieve all Users
-  router.get('/', findAll)
+// Retrieve all Users
+router.get('/', findAll)
 
-  // Update a User with id
-  router.put('/:id', update)
+// Update a User with id
+router.put('/:id', update)
 
-  // Delete a User with id
-  router.delete('/:id', deleteUser)
+// Delete a User with id
+router.delete('/:id', deleteUser)
 
-  app.use('/api/users', router)
-}
+export default router

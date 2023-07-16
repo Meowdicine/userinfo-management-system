@@ -3,18 +3,20 @@ import {Bus} from '../Bus'
 
 export default {
   data() {
-    return {}
+    return {
+      Notification: {},
+    }
   },
   computed: {
     Bus() {
       return Bus
-    }
+    },
   },
 
   methods: {
     //Create axios instance.
     fetch() {
-      let instance = axios.create()
+      const instance = axios.create()
       instance.defaults.baseURL = 'http://localhost:8080/'
       return instance
     },
@@ -23,8 +25,15 @@ export default {
       Bus.$emit('alert', {
         message,
         show: true,
-        confirmed: success
+        confirmed: success,
       })
-    }
-  }
+    },
+
+    toast({message}) {
+      this.Notification = {
+        isVisible: true,
+        message,
+      }
+    },
+  },
 }

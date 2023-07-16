@@ -140,7 +140,7 @@ export default {
     message: '',
     loader: true,
     currentPage: 1,
-    show_footer: true,
+    show_footer: false,
     pagination: {last_page: 1},
   }),
 
@@ -181,13 +181,14 @@ export default {
             this.show_footer = false
             this.message = 'no items to show'
           }
+
           this.checkLastPage(this.pagination)
         })
         .finally(() => {
+          NProgress.done()
           setTimeout(() => {
-            NProgress.done()
             this.loader = false
-          }, 1000)
+          }, 700)
         })
     },
 

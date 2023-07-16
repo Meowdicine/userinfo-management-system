@@ -1,8 +1,10 @@
-const {User} = require('../models')
+import User from '../models/user.js'
+import handleErrors, { getPagination } from '../helpers/index.js'
 
 // Create and Save a new User
-exports.create = (req, res) => {
-  const {name, email, phone, providers} = req.body
+export const create = (req, res) => {
+  const { name, email, phone, providers } = req.body
+
   const user = new User({
     name,
     email,
@@ -13,163 +15,76 @@ exports.create = (req, res) => {
   // Save User in the database
   user
     .save(user)
-    .then(data => {
-      data.populate('providers', function () {
+    .then((data) =>
+      data.populate('providers', () => {
         res.json(data)
       })
-    })
-    .catch(err => {
-      console.log(err)
-
-      let errorMessages
-      if (err.code === 11000) {
-        errorMessages = {email: {message: 'Email must be unique'}}
-      } else {
-        errorMessages = err.errors
-      }
-
-      res.status(422).json({
-        errors: errorMessages || 'Some error occurred while creating the User.'
-      })
-    })
+    )
+    .catch((err) => handleErrors(err, res, 422))
 }
+
 // Retrieve all Users from the database.
-exports.findAll = (req, res) => {
-  let {page, name, sorting} = req.query
+export const findAll = async (req, res) => {
+  try {
+    const { page, name, sorting } = req.query
 
-  let query = {}
-  if (name) {
-    query.name = {$regex: `${name}`, $options: 'sxi'}
-  } else {
-    query = {}
-  }
+    const query = {}
 
-  const userCount = total => {
-    let limit = 5,
-      skip = limit * parseInt(page - 1),
-      last_page = Math.ceil(total / limit)
-
-    if (total % limit != 0) {
-      if (page == last_page) {
-        limit = total % limit
-      }
+    if (name) {
+      query.name = { $regex: `${name}`, $options: 'sxi' }
     }
 
-    let defaultObj = {orderBy: 'createdAt', orderType: -1}
+    const total = await User.countDocuments(query)
 
-    // console.log(sorting)
-    if (sorting) {
-      sorting = JSON.parse(sorting)
+    const { orderBy = 'createdAt', orderType } = sorting
+      ? JSON.parse(sorting)
+      : {}
 
-      if (Object.keys(sorting).length) {
-        if ('orderBy' in sorting && 'orderType' in sorting) {
-          sorting.orderType = sorting.orderType === 'desc' ? -1 : 1
-        } else {
-          sorting = defaultObj
-        }
-      } else {
-        sorting = defaultObj
-      }
-    } else {
-      sorting = defaultObj
-    }
+    const sortQuery = { orderBy, orderType: orderType === 'asc' ? 1 : -1 }
 
-    // console.log(typeof JSON.parse(sorting))
-    User.find(query)
-      .populate('providers')
-      .sort({[sorting.orderBy]: sorting.orderType})
+    const { skip, limit, ...pagination } = getPagination({ total, page })
+
+    const data = await User.find(query)
       .skip(skip)
       .limit(limit)
-      .then(data => {
-        res.json({
-          data,
-          pagination: {
-            total,
-            last_page,
-            from: skip + 1,
-            to: skip + limit,
-            current_page: +page
-          }
-        })
-      })
-      .catch(err => {
-        res.status(400).json({
-          message: err.message || {
-            errors: {message: 'Some error occurred while retrive the Users.'}
-          }
-        })
-      })
-  }
+      .populate('providers')
+      .sort({ [sortQuery.orderBy]: sortQuery.orderType })
 
-  User.count({...query}, function (err, total) {
-    userCount(total)
-  })
+    res.json({ data, pagination })
+  } catch (err) {
+    handleErrors(err, res)
+  }
 }
 
 // Update a User by the id in the request
-exports.update = (req, res) => {
-  const {id} = req.params
-  const {name, email, phone, providers} = req.body
-  let update = {
+export const update = (req, res) => {
+  const { id } = req.params
+  const { name, email, phone, providers } = req.body
+
+  const data = {
     name,
     email,
     phone,
     providers
   }
 
-  User.findByIdAndUpdate(id, update, {
+  User.findByIdAndUpdate(id, data, {
     new: true,
     runValidators: true,
     useFindAndModify: true
   })
-    .then(data => {
-      if (!data) {
-        res.status(404).json({
-          message: `Cannot update User with id=${id}. Maybe User was not found!`
-        })
-      } else
-        data.populate('providers', function () {
-          res.json(data)
-        })
-    })
-    .catch(err => {
-      console.log(err)
-      let errorMessages
-      if (err.code === 11000) {
-        errorMessages = {
-          userName: {message: 'email must be unique'}
-        }
-      } else {
-        errorMessages = err.errors
-      }
-
-      res.status(422).json({
-        errors: errorMessages || {
-          errors: {message: 'Some error occurred while updating the User.'}
-        }
+    .then((data) =>
+      data.populate('providers', () => {
+        res.json(data)
       })
-    })
+    )
+    .catch((err) => handleErrors(err, res, 422))
 }
 // Delete a User with the specified id in the request
-exports.deleteUser = (req, res) => {
-  const {id} = req.params
+export const deleteUser = (req, res) => {
+  const { id } = req.params
 
   User.findByIdAndRemove(id)
-    .then(data => {
-      console.log(data)
-      if (!data) {
-        res.status(404).json({
-          message: `Cannot delete User with id=${id}. Maybe User was not found!`
-        })
-      } else {
-        res.json({
-          message: 'User was deleted successfully!'
-        })
-      }
-    })
-    .catch(err => {
-      res.status(422).json({
-        message: 'Could not delete User with id=' + id
-      })
-    })
+    .then(() => res.json({ message: 'User deleted successfully!' }))
+    .catch((err) => handleErrors(err, res, 422))
 }

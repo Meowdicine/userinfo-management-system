@@ -1,65 +1,72 @@
-module.exports = mongoose => {
-  var schema = mongoose.Schema(
-    {
-      name: {
-        type: String,
-        required: [true, `{PATH} is required`],
-        maxLength: [30, '{PATH} must be less than 30 character']
-      },
-      email: {
-        type: String,
-        unique: true,
-        required: [true, '{PATH} is required'],
-        validate: {
-          validator: function (v) {
-            return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v)
-          },
-          message: 'Please enter a valid {PATH}'
-        }
-      },
-      phone: {
-        type: String,
-        required: [true, '{PATH} number is required'],
-        validate: {
-          validator: function (v) {
-            return /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im.test(
-              v
-            )
-          },
-          message: 'Please enter a valid {PATH} number'
-        }
-      },
-      providers: [
-        {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: 'Provider'
-        }
-      ]
+import mongoose from 'mongoose'
+
+const schema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: [true, `{PATH} is required`],
+      maxLength: [30, '{PATH} must be less than 30 character']
     },
-    {timestamps: true}
-  )
-
-  schema.set('toJSON', {
-    versionKey: false,
-    transform: function (doc, ret, opt) {
-      return ret
-    }
-  })
-
-  const User = mongoose.model('User', schema)
-
-  User.count({}, function (err, count) {
-    if (count < 50) {
-      for (let i = 0; i < 50; i++) {
-        const user = new User({
-          name: Math.random().toString(36).substr(2, 8),
-          email: `${Math.random().toString(36).substr(2, 15)}@example.com`,
-          phone: `+${Math.ceil(Math.random() * 254584548545)}`
-        })
-        user.save(user)
+    email: {
+      type: String,
+      unique: true,
+      required: [true, '{PATH} is required'],
+      validate: {
+        message: 'Please enter a valid {PATH}',
+        validator: function (v) {
+          return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v)
+        }
       }
-    }
-  })
+    },
+    phone: {
+      type: String,
+      required: [true, '{PATH} number is required'],
+      validate: {
+        message: 'Please enter a valid {PATH} number',
+        validator: function (v) {
+          return /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im.test(
+            v
+          )
+        }
+      }
+    },
+    providers: [
+      {
+        ref: 'Provider',
+        type: mongoose.Schema.Types.ObjectId
+      }
+    ]
+  },
+  { timestamps: true }
+)
 
-  return User
+schema.set('toJSON', {
+  versionKey: false,
+  transform: (_, ret, __) => ret
+})
+
+const User = mongoose.model('User', schema)
+
+const createMockData = async () => {
+  try {
+    const users = await User.find({})
+
+    if (users.length === 0) {
+      const mockData = Array.from({ length: 50 }, () => ({
+        name: Math.random().toString(36).substr(2, 8),
+        email: `${Math.random().toString(36).substr(2, 15)}@example.com`,
+        phone: `+${Math.ceil(Math.random() * 254584548545)}`
+      }))
+
+      await User.insertMany(mockData)
+
+      console.log('Users mock data created successfully')
+    }
+  } catch (err) {
+    console.error(err)
+  }
 }
+
+createMockData()
+
+export default User

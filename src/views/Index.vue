@@ -86,8 +86,8 @@
         :payload="provider"
         :modalTitle="provider.modalTitle"
         :requestType="provider.requestType"
-        @created="addNewProvider"
-        @updated="updateProviders"
+        @created="providerCreated"
+        @updated="providerUpdated"
         @close="isCreatingProvider = false"
       >
         <template #content>
@@ -99,9 +99,9 @@
           />
         </template>
       </FormModal>
-
-      <!-- <Alert ref="alert" /> -->
     </div>
+
+    <Notification v-model="Notification.isVisible" v-bind="Notification" />
   </div>
 </template>
 
@@ -112,6 +112,7 @@ import FormInput from '../components/FormInput.vue'
 import CustomBtn from '../components/CustomBtn.vue'
 import DataTable from '../components/DataTable.vue'
 import FormProviders from '../components/FormProviders.vue'
+import Notification from '../components/Notification.vue'
 
 export default {
   components: {
@@ -121,6 +122,7 @@ export default {
     CustomBtn,
     DataTable,
     FormProviders,
+    Notification,
   },
 
   data() {
@@ -160,6 +162,8 @@ export default {
     addNewUser() {
       this.formModal = false
       this.Bus.$emit('getDataTable')
+
+      this.toast({message: 'User added successfully!'})
     },
 
     editUserModal(user) {
@@ -174,16 +178,20 @@ export default {
     updateUser() {
       this.formModal = false
       this.Bus.$emit('getDataTable')
+
+      this.toast({message: 'User updated successfully!'})
     },
 
     deleteUser(user) {
-      let success = () =>
+      const success = () =>
         this.fetch()
           .delete(`/api/users/${user._id}`)
           .then(() => {
             this.formModal = false
             this.Bus.$emit('getDataTable')
+            this.toast({message: 'User deleted successfully!'})
           })
+
       this.alertConfirm(success)
     },
 
@@ -192,14 +200,18 @@ export default {
       this.isCreatingProvider = true
     },
 
-    addNewProvider(res) {
+    providerCreated(res) {
       this.Bus.$emit('add-provider', res)
       this.isCreatingProvider = false
+
+      this.toast({message: 'Provider added successfully!'})
     },
 
-    updateProviders(res) {
+    providerUpdated(res) {
       this.Bus.$emit('update-providers', res)
       this.isCreatingProvider = false
+
+      this.toast({message: 'Provider updated successfully!'})
     },
   },
 }

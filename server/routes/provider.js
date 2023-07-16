@@ -1,24 +1,23 @@
-module.exports = app => {
-  const {
-    create,
-    findAll,
-    update,
-    deleteProvider
-  } = require('../controllers/provider.js')
+import {
+  create,
+  findAll,
+  update,
+  deleteProvider,
+} from '../controllers/provider.js'
+import express from 'express'
 
-  var router = require('express').Router()
+const router = express.Router()
 
-  // Create a new Provider
-  router.post('/', create)
+// Create a new Provider
+router.post('/', create)
 
-  // Retrieve all Providers
-  router.get('/', findAll)
+// Retrieve all Providers
+router.get('/', findAll)
 
-  // Update a Provider with id
-  router.put('/:id', update)
+// Update a Provider with id
+router.put('/:id', update)
 
-  // Delete a Provider with id
-  router.delete('/:id', deleteProvider)
+// Delete a Provider with id
+router.delete('/:id', deleteProvider)
 
-  app.use('/api/providers', router)
-}
+export default router

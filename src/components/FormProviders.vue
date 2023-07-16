@@ -121,6 +121,8 @@ export default {
 
     addNewProvider({data}) {
       this.providers.unshift(data)
+
+      this.toast({message: 'Provider added successfully!'})
     },
 
     editProviderModal(provider) {
@@ -147,6 +149,8 @@ export default {
       this.formModal = false
       this.Bus.$emit('getDataTable')
       this.fetchProviders()
+
+      this.toast({message: 'Provider updated successfully!'})
     },
 
     deleteProvider(provider) {

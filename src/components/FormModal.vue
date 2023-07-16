@@ -12,8 +12,8 @@
               v-if="Object.keys(errors).length !== 0"
               class="bg-red-400 p-4 rounded text-white"
             >
-              <li v-for="(error, index) in errors" :key="index">
-                {{ error.message }}
+              <li v-for="(error, index) in Object.values(errors)" :key="index">
+                {{ error }}
               </li>
             </ul>
           </div>
