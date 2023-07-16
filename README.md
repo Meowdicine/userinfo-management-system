@@ -2,7 +2,7 @@
 
 ## Watch how it works.
 
-https://github.com/alaa-abdallah1/crud/assets/56931924/8e49a49b-15f8-4567-ae72-fa1187afe0ff
+https://github.com/alaa-abdallah1/crud/assets/56931924/32528a9f-42aa-4673-8f0b-13564f59c0f7
 
 
 ## Project setup
@@ -25,8 +25,10 @@ npm run build
 npm run lint
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+
+
+
+
 
 
 
