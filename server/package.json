@@ -5,6 +5,7 @@
   "description": "Node.js Restful CRUD API with Node.js, Express and MongoDB",
   "main": "server.js",
   "scripts": {
+    "start": "node server.js",
     "test": "command"
   },
   "keywords": [
