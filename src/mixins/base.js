@@ -17,7 +17,9 @@ export default {
     //Create axios instance.
     fetch() {
       const instance = axios.create()
-      instance.defaults.baseURL = 'http://localhost:8080/'
+      instance.defaults.baseURL =
+        process.env.VUE_APP_BASE_URL || 'http://localhost:8080/'
+
       return instance
     },
 
