@@ -1,45 +1,53 @@
 import cors from 'cors'
+import path from 'path'
+import dotenv from 'dotenv'
 import express from 'express'
-import mongoose from 'mongoose'
+import { fileURLToPath } from 'url'
 import bodyParser from 'body-parser'
 import userRoutes from './routes/user.js'
+import database from './database/config.js'
 import providersRoutes from './routes/provider.js'
+
+dotenv.config()
+
+database.connect()
+
+const ENVIRONMENT = process.env.ENVIRONMENT
 
 const app = express()
 
 const { json, urlencoded } = bodyParser
 
-const DATABASE_URL = 'mongodb://localhost:27017/crud_db'
-
-var corsOptions = { origin: 'http://localhost:8081' }
-
-app.use(cors(corsOptions))
+// define the absolute path
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 // parse requests of content-type - application/json
 app.use(json())
 
+const origin = {
+  LOCAL: ['http://localhost:8081'],
+  PRODUCTION: ['https://crud-server-3tvz.onrender.com']
+}
+
+const corsOptions = { origin: origin[ENVIRONMENT] }
+
+app.use(cors(corsOptions))
+
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(urlencoded({ extended: true }))
-
-mongoose
-  .connect(DATABASE_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  })
-  .then(() => {
-    console.log('Connected to the database!')
-  })
-  .catch((err) => {
-    console.log('Cannot connect to the database!', err)
-    process.exit()
-  })
-
-// Serve the Vue.js app as static files
-app.use(express.static('../dist'))
 
 // api routes
 app.use('/api/users', userRoutes)
 app.use('/api/providers', providersRoutes)
+
+// Serve the Vue.js app as static files
+app.use(express.static('dist'))
+
+// Handle all routes by serving the index.html file
+app.get('*', (_, res) => {
+  res.sendFile(__dirname + '/dist/index.html')
+})
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080

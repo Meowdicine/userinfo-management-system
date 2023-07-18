@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "vue-cli-service serve",
-    "build": "vue-cli-service build"
+    "build": "vue-cli-service build",
+    "prod": "yarn build && cd server && yarn review && yarn start"
   },
   "dependencies": {
     "axios": "^0.24.0",
