@@ -19,7 +19,7 @@
               <tr
                 class="leading-4 capitalize tracking-wider text-base text-left border-b-2 border-gray-200"
               >
-                <th v-for="(n, index) in 4">
+                <th v-for="(n, index) in 4" :key="index">
                   <div
                     class="h-8 bg-gray-200 rounded-full dark:bg-gray-700"
                   ></div>
@@ -29,10 +29,11 @@
 
             <tbody>
               <tr
-                v-for="(nx, indexx) in 4"
+                v-for="(n, index) in 5"
+                :key="index"
                 class="text-gray-900 hover:bg-blue-600 border-b-2 border-gray-200"
               >
-                <td v-for="(n, index) in 4">
+                <td v-for="(_, childIndex) in 4" :key="childIndex">
                   <div
                     class="h-8 bg-gray-200 rounded-full dark:bg-gray-700"
                   ></div>
