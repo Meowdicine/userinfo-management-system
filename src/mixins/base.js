@@ -1,16 +1,17 @@
 import axios from 'axios'
-import {Bus} from '../Bus'
+import { Bus } from '../Bus'
 
 export default {
   data() {
     return {
       Notification: {},
+      screenSize: window.screen.width
     }
   },
   computed: {
     Bus() {
       return Bus
-    },
+    }
   },
 
   methods: {
@@ -27,15 +28,22 @@ export default {
       Bus.$emit('alert', {
         message,
         show: true,
-        confirmed: success,
+        confirmed: success
       })
     },
 
-    toast({message}) {
+    toast({ message }) {
       this.Notification = {
         isVisible: true,
-        message,
+        message
       }
-    },
+    }
   },
+
+  mounted() {
+    window.addEventListener(
+      'resize',
+      (e) => (this.screenSize = window.screen.width)
+    )
+  }
 }

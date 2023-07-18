@@ -1,9 +1,9 @@
 <template>
   <div>
-    <Loader v-if="loader" />
+    <Skeleton v-if="loader" />
     <div v-else class="flex flex-col space-y-4">
       <div
-        class="items-center justify-between flex flex-col-reverse md:flex-row"
+        class="items-end md:items-center justify-between gap-4 flex flex-col-reverse md:flex-row"
       >
         <div class="w-full md:w-1/3">
           <FormInput
@@ -13,9 +13,7 @@
             placeholder="Search by user's name..."
           />
         </div>
-        <div class="mb-4 md:mb-0">
-          <slot name="topButton" />
-        </div>
+        <slot name="topButton" />
       </div>
       <div id="dataTable">
         <div class="w-full card border-2">
@@ -118,17 +116,17 @@
 
 <script>
 import NProgress from 'nprogress'
-import Loader from './Loader.vue'
 import FormInput from './FormInput.vue'
+import Skeleton from './Skeleton.vue'
 
 export default {
-  components: {Loader, FormInput},
+  components: { FormInput, Skeleton },
   props: {
     url: String,
     headers: {
       type: Array,
-      default: () => [],
-    },
+      default: () => []
+    }
   },
   data: () => ({
     items: [],
@@ -141,7 +139,7 @@ export default {
     loader: true,
     currentPage: 1,
     show_footer: false,
-    pagination: {last_page: 1},
+    pagination: { last_page: 1 }
   }),
 
   methods: {
@@ -168,10 +166,10 @@ export default {
         .get(this.url, {
           params: {
             ...query,
-            page: this.currentPage,
-          },
+            page: this.currentPage
+          }
         })
-        .then(({data}) => {
+        .then(({ data }) => {
           if (data.data.length) {
             this.items = data.data
             this.show_footer = true
@@ -194,11 +192,11 @@ export default {
 
     paginate(action) {
       action === 'next' ? this.currentPage++ : this.currentPage--
-      this.$router.replace({query: {page: this.currentPage}})
+      this.$router.replace({ query: { page: this.currentPage } })
       this.getDataTable()
     },
 
-    sort({key}) {
+    sort({ key }) {
       this.sorting.orderType =
         this.sorting.orderType === 'desc' ? 'asc' : 'desc'
       this.sorting.orderBy = key
@@ -214,7 +212,7 @@ export default {
         this.currentPage = this.$route.query.page
       } else {
         this.currentPage = 1
-        this.$router.push({query: {page: this.currentPage}})
+        this.$router.push({ query: { page: this.currentPage } })
       }
     },
 
@@ -224,7 +222,7 @@ export default {
         !isNaN(this.$route.query.page) &&
         this.$route.query.page > pagination.last_page
       ) {
-        this.$router.push({name: 'NotFound'})
+        this.$router.push({ name: 'NotFound' })
       }
     },
 
@@ -240,7 +238,7 @@ export default {
         let finalValue = item[keys.shift()]
 
         if (finalValue && [Object, Array].includes(finalValue.constructor)) {
-          keys.forEach(key => {
+          keys.forEach((key) => {
             if (
               finalValue &&
               [Object, Array].includes(finalValue.constructor)
@@ -256,7 +254,7 @@ export default {
       }
 
       return value || '_'
-    },
+    }
   },
 
   mounted() {
@@ -271,10 +269,11 @@ export default {
     search() {
       clearTimeout(this.searchTime)
       this.searchTime = setTimeout(() => {
-        this.$route.query.page != 1 && this.$router.replace({query: {page: 1}})
+        this.$route.query.page != 1 &&
+          this.$router.replace({ query: { page: 1 } })
         this.getDataTable()
       }, 1000)
-    },
-  },
+    }
+  }
 }
 </script>

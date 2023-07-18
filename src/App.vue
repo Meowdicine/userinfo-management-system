@@ -5,7 +5,9 @@
       <div class="max-w-7xl mx-auto">
         <div class="md:max-w-max flex justify-center md:justify-start">
           <router-link :to="`/users?page=1`">
-            <span class="italic font-bold text-primary"><Logo /></span>
+            <span class="italic font-bold text-primary">
+              <Icon name="logo" />
+            </span>
           </router-link>
         </div>
       </div>
@@ -26,19 +28,20 @@
 
 <script>
 import Alert from './components/Alert.vue'
-import Logo from './components/Logo.vue'
+import Icon from './components/Icon.vue'
+
 export default {
-  components: {Alert, Logo},
+  components: { Alert, Icon },
   data() {
     return {
       alert: {
-        show: false,
-      },
+        show: false
+      }
     }
   },
 
   mounted() {
-    this.Bus.$on('alert', res => (this.alert = res))
-  },
+    this.Bus.$on('alert', (res) => (this.alert = res))
+  }
 }
 </script>

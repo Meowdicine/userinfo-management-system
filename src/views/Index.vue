@@ -1,13 +1,17 @@
 <template>
   <div>
-    <div id="app" class="max-w-7xl mx-auto py-12 px-2">
+    <div id="app" class="max-w-7xl mx-auto py-8 px-2">
       <DataTable url="/api/users" :headers="headers">
         <template #topButton>
-          <button @click="addUserModal" class="btn btn-primary">
+          <button
+            @click="addUserModal"
+            class="btn btn-primary w-full md:max-w-max"
+          >
             <span class="font-bold mr-2">+</span> Add new user
           </button>
         </template>
-        <template #item.providers="{item}">
+
+        <template #item.providers="{ item }">
           <div
             class="flex flex-wrap items-center gap-1"
             v-if="item.providers.length"
@@ -21,18 +25,14 @@
           </div>
           <div v-else>-</div>
         </template>
-        <template #item.actions="{item}">
-          <div class="flex users-center">
-            <CustomBtn
-              cssClass="w-5 h-5 mr-1"
-              componentType="editIcon"
-              @click.native="editUserModal(item)"
-            />
-            <CustomBtn
-              cssClass="w-5 h-5"
-              componentType="deleteIcon"
-              @click.native="deleteUser(item)"
-            />
+        <template #item.actions="{ item }">
+          <div class="flex space-x-1 users-center">
+            <CustomBtn normal @click="editUserModal(item)">
+              <Icon name="edit" />
+            </CustomBtn>
+            <CustomBtn normal @click="deleteUser(item)">
+              <Icon name="delete" />
+            </CustomBtn>
           </div>
         </template>
       </DataTable>
@@ -74,6 +74,7 @@
           />
           <FormProviders
             v-model="user.providers"
+            @deleted="providerDeleted"
             @update="openProviderModal"
             @create="openProviderModal"
           />
@@ -82,6 +83,7 @@
 
       <FormModal
         v-if="isCreatingProvider"
+        size="lg"
         :url="provider.url"
         :payload="provider"
         :modalTitle="provider.modalTitle"
@@ -95,18 +97,21 @@
             isRequired
             type="text"
             v-model="provider.name"
+            placeholder="provider name"
             label="provider name"
           />
         </template>
       </FormModal>
-    </div>
 
-    <Notification v-model="Notification.isVisible" v-bind="Notification" />
+      <Notification v-model="Notification.isVisible" v-bind="Notification" />
+    </div>
   </div>
 </template>
 
 <script>
+import Icon from '../components/Icon.vue'
 import Alert from '../components/Alert.vue'
+import Skeleton from '../components/Skeleton.vue'
 import FormModal from '../components/FormModal.vue'
 import FormInput from '../components/FormInput.vue'
 import CustomBtn from '../components/CustomBtn.vue'
@@ -117,21 +122,25 @@ import Notification from '../components/Notification.vue'
 export default {
   components: {
     Alert,
+    Icon,
     FormModal,
     FormInput,
     CustomBtn,
     DataTable,
+    Skeleton,
     FormProviders,
-    Notification,
+    Notification
   },
 
   data() {
     return {
       user: {},
+      message: 'hello',
 
       url: '',
       requestType: '',
       hasDeleteBtn: false,
+      isDeleting: false,
 
       modalTitle: '',
       formModal: false,
@@ -140,12 +149,12 @@ export default {
       provider: {},
 
       headers: [
-        {key: 'name', sorting: true},
-        {key: 'email', sorting: true},
-        {key: 'phone', sorting: true},
-        {title: 'providers', key: 'providers'},
-        {title: 'actions', key: 'actions'},
-      ],
+        { key: 'name', sorting: true },
+        { key: 'email', sorting: true },
+        { key: 'phone', sorting: true },
+        { title: 'providers', key: 'providers' },
+        { title: 'actions', key: 'actions' }
+      ]
     }
   },
 
@@ -155,7 +164,7 @@ export default {
       this.url = '/api/users'
       this.hasDeleteBtn = false
       this.requestType = 'post'
-      this.user = {providers: []}
+      this.user = { providers: [] }
       this.modalTitle = 'Add New User'
     },
 
@@ -163,12 +172,12 @@ export default {
       this.formModal = false
       this.Bus.$emit('getDataTable')
 
-      this.toast({message: 'User added successfully!'})
+      this.toast({ message: 'User added successfully!' })
     },
 
     editUserModal(user) {
       this.formModal = true
-      this.user = {...user}
+      this.user = { ...user }
       this.hasDeleteBtn = true
       this.requestType = 'put'
       this.modalTitle = 'Edit User'
@@ -179,7 +188,7 @@ export default {
       this.formModal = false
       this.Bus.$emit('getDataTable')
 
-      this.toast({message: 'User updated successfully!'})
+      this.toast({ message: 'User updated successfully!' })
     },
 
     deleteUser(user) {
@@ -189,7 +198,7 @@ export default {
           .then(() => {
             this.formModal = false
             this.Bus.$emit('getDataTable')
-            this.toast({message: 'User deleted successfully!'})
+            this.toast({ message: 'User deleted successfully!' })
           })
 
       this.alertConfirm(success)
@@ -204,15 +213,19 @@ export default {
       this.Bus.$emit('add-provider', res)
       this.isCreatingProvider = false
 
-      this.toast({message: 'Provider added successfully!'})
+      this.toast({ message: 'Provider added successfully!' })
     },
 
     providerUpdated(res) {
       this.Bus.$emit('update-providers', res)
       this.isCreatingProvider = false
 
-      this.toast({message: 'Provider updated successfully!'})
+      this.toast({ message: 'Provider updated successfully!' })
     },
-  },
+
+    providerDeleted() {
+      this.toast({ message: 'Provider deleted successfully!' })
+    }
+  }
 }
 </script>
