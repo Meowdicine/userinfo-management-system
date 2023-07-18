@@ -27,7 +27,7 @@ app.use(json())
 
 const origin = {
   LOCAL: ['http://localhost:8081'],
-  PRODUCTION: ['https://crud-server-3tvz.onrender.com']
+  PRODUCTION: ['https://crud-mevn-project.onrender.com']
 }
 
 const corsOptions = { origin: origin[ENVIRONMENT] }
