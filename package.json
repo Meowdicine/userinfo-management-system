@@ -6,7 +6,8 @@
     "start": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "prod:build": "rm -rf node_modules/.cache && yarn && yarn build && cd server && yarn review",
-    "prod:start": "cd server && yarn start"
+    "prod:start": "cd server && yarn start",
+    "serve": "yarn prod:build && yarn prod:start"
   },
   "dependencies": {
     "axios": "^0.24.0",
