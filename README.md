@@ -25,7 +25,8 @@ To set up the project locally, follow these steps:
 1. Clone the repository: `https://github.com/alaa-abdallah1/crud-mevn-project.git`
 2. Go to the project directory `cd crud-mevn-project`
 3. prepare your environment `cp .env.example .env` and add the right values
-4. Install dependencies and Start the development server: `npm run serve`
+4. Install dependencies and Start the development server: `npm install && npm run build`
+6. Go to the server directory `cd server && npm install && npm run start`
 5. Open the app in your browser at [http://localhost:8080](http://localhost:8080)
 
 That's it! You should now be able to run the app locally.
